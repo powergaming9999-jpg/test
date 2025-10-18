@@ -12,3 +12,4 @@ bcrypt
 httpx
 jwt
 httpx[http2]
+tls_client
