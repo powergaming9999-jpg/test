@@ -4,14 +4,11 @@ from typing import Union
 import utils
 import traceback
 
-from web.api.auth import CaptchaPayload, authorise_jwt, generate_jwt
 from config import config
 
 
 
 client = httpx.Client(http2=True)
-
-# expected_hostname = "deeeez.chasa.wtf"
 
 @dataclass
 class TurnstileResponse:
@@ -35,7 +32,10 @@ class Captcha:
         self.expires_at = self.created_at + config().turnstile.jwt_expire
 
     @staticmethod
-    def from_jwt(payload: Union[str, CaptchaPayload]):
+    def from_jwt(payload):
+        # Import here to avoid circular import
+        from web.api.auth import CaptchaPayload, authorise_jwt
+        
         if isinstance(payload, str) or not payload.validated:
             payload = authorise_jwt(payload, 1)
 
@@ -48,6 +48,9 @@ class Captcha:
         return Captcha(payload.z, True, payload.x)
 
     def to_jwt(self) -> str:
+        # Import here to avoid circular import
+        from web.api.auth import CaptchaPayload, generate_jwt
+        
         return generate_jwt(
             CaptchaPayload(
                 self.cdata,
