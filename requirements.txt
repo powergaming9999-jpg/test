@@ -4,3 +4,4 @@ gevent-websocket
 requests
 pyyaml
 python-dotenv
+dacite
