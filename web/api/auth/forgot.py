@@ -16,22 +16,10 @@ import db
 def route_forgot_send():
     try:
         request_data = {
-            'email':    utils.typ(request.json['email'], str),
-            'captcha':  utils.typ(request.json['captcha'], str),
-            'jwt':      utils.typ(request.json['jwt'], str)
+            'email': utils.typ(request.json['email'], str)
         }
     except KeyError:
         return jsonify({'error': True, 'message': 'Bad Request.'}), 400
-    
-    # Validate JWT + Turnstile
-    try:
-        captcha = utils.Captcha.from_jwt(request_data['jwt'])
-    except utils.turnstile.CaptchaJWTInvalid:
-        return jsonify({'error': True, 'message': 'Invalid or expired JWT. Refresh the page.'}), 400
-    
-    captcha_result = captcha.check(request_data['captcha'], request.access_route[0])
-    if not captcha_result.passed:
-        return jsonify({'error': True, 'message': 'CAPTCHA was invalid, or expired. Please try again.'}), 400
     
     # Validate email
     conn, cur = db.pool.get()
@@ -76,8 +64,8 @@ def route_forgot_send():
 def route_forgot_change():
     try:
         request_data = {
-            'password':  utils.typ(request.json['password'], str),
-            'key':       utils.typ(request.json['key'], str)
+            'password': utils.typ(request.json['password'], str),
+            'key': utils.typ(request.json['key'], str)
         }
     except KeyError:
         return jsonify({'error': True, 'message': 'Bad Request.'}), 400
