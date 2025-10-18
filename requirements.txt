@@ -1,0 +1,6 @@
+Flask
+gevent
+gevent-websocket
+requests
+pyyaml
+python-dotenv
