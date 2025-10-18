@@ -10,3 +10,4 @@ flask_sock
 colorama
 bcrypt
 httpx
+jwt
