@@ -11,3 +11,4 @@ colorama
 bcrypt
 httpx
 jwt
+httpx[http2]
