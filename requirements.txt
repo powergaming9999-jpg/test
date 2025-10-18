@@ -8,3 +8,4 @@ dacite
 flask_limiter
 flask_sock
 colorama
+bcrypt
