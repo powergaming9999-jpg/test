@@ -9,7 +9,6 @@ from flask import request, jsonify
 from config import config
 import utils
 import db
-from web.api.auth import forgot, login, register, verify
 
 
 
@@ -208,15 +207,15 @@ def generate_jwt(payload: Union[AuthPayload, CaptchaPayload, VerifyPayload, APIK
 def require_auth(cls):
     @wraps(cls)
     def wrapper(*args, **kwargs):
-        jwt = request.headers.get('Authorization')
-        if not jwt:
+        jwt_token = request.headers.get('Authorization')
+        if not jwt_token:
             return jsonify({'error': True, 'message': 'Unauthorized.'}), 401
 
-        jwt_type = 3 if jwt.startswith('Bot') else 0
-        jwt = jwt[4:] if jwt_type == 3 else jwt
+        jwt_type = 3 if jwt_token.startswith('Bot') else 0
+        jwt_token = jwt_token[4:] if jwt_type == 3 else jwt_token
         
         try:
-            payload: Union[AuthPayload, APIKeyPayload] = authorise_jwt(jwt, jwt_type)
+            payload: Union[AuthPayload, APIKeyPayload] = authorise_jwt(jwt_token, jwt_type)
         except UserNotFound:
             return jsonify({'error': True, 'message': 'Unauthorized.'}), 401
         
@@ -234,5 +233,3 @@ def no_api_keys(cls):
 
         return cls(key_payload, *args, **kwargs)
     return wrapper
-
-from web.api.auth import validate
